@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">PopularMoviesApp</string>
+    <string name="refresh">Refresh</string>
+    <string name="settings">Toggle settings</string>
+    <string name="title_popular_movies">Popular Movies</string>
+    <string name="title_toprated_movies">Top rated movies</string>
+    <string name="no_internet">Aww. Something is wrong somewhere.Please check your internet connection and try again.</string>
+</resources>
