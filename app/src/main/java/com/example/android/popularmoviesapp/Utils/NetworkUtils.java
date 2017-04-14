@@ -22,7 +22,7 @@ public class NetworkUtils {
 
     final static String PARAM_QUERY_1 = "api_key";
     final static String PARAM_QUERY_2 = "language";
-    final static String API_KEY = "5368d1766bbc57d0b9ab888357294974";
+    final static String API_KEY = " ";
     final static String LANGUAGE = "en-US";
 
 

@@ -39,15 +39,16 @@ public class MovieDetails extends AppCompatActivity {
         if (getIntent().hasExtra(MainActivity.SERIALIZABLE_CONTENT)){
             Intent intent = getIntent();
             MoviePosters moviePosters = (MoviePosters) intent.getSerializableExtra(MainActivity.SERIALIZABLE_CONTENT);
-
+            Picasso.with(this).load(moviePosters.getMovie_poster_path()).into(mMoviePoster);
             actionBar.setTitle(moviePosters.getMovie_original_title());
             mMovieTitle.setText(moviePosters.getMovie_original_title());
-            mMovieReleaseYear.setText(moviePosters.getMovie_release_date());
+            mMovieReleaseYear.append(moviePosters.getMovie_release_date());
             mMovieSummary.setText(moviePosters.getMovie_overview());
-            mRatingBar.setRating((float) moviePosters.getMovie_vote_average());
 
+            float rating = (float)((moviePosters.getMovie_vote_average() /10) * 5);
+            Log.d("rate", rating+" ");
+            mRatingBar.setRating(rating);
 
-            Picasso.with(this).load(moviePosters.getMovie_poster_path()).into(mMoviePoster);
 
 
         }
