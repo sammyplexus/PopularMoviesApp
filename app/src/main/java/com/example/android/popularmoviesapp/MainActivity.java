@@ -35,16 +35,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.o
         progressBar = (ProgressBar) findViewById(R.id.pb_recyclerview);
         mErrorTextView = (TextView)findViewById(R.id.tv_recycler_view_error);
         actionBar = getSupportActionBar();
+        mRecyclerView = (RecyclerView) findViewById(R.id.rv_movie_posters);
 
 
         if (NetworkUtils.isInternetAvailable() && NetworkUtils.isNetworkAvailable(this)) {
 
             mErrorTextView.setVisibility(View.INVISIBLE);
             MainMoviePosters = new ArrayList<>();
-
             actionBar.setTitle(getResources().getString(R.string.title_popular_movies));
             getPosters("popular");
-            mRecyclerView = (RecyclerView) findViewById(R.id.rv_movie_posters);
         }
         else {
             mErrorTextView.setVisibility(View.VISIBLE);
@@ -110,11 +109,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.o
 
 
     public void getPosters(String path) {
-        if (MainMoviePosters != null)
+
         MainMoviePosters.clear();
         if (mRecyclerAdapter != null)
             mRecyclerAdapter.notifyDataSetChanged();
-        mRecyclerAdapter = null;
+
         URL url = NetworkUtils.buildUrl(this, path);
         progressBar.setVisibility(View.VISIBLE);
         new TMBDQuery(this, this).execute(url);
@@ -123,11 +122,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.o
         @Override
         public void onTaskComplete(ArrayList<MoviePosters> result)
         {
-            if (MainMoviePosters != null)
             MainMoviePosters.addAll(result);
             mRecyclerAdapter = new RecyclerAdapter(MainActivity.this, MainActivity.this, MainMoviePosters);
             GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this, getResources().getInteger(R.integer.num_columns_recycler_view));
-
             mRecyclerView.setLayoutManager(gridLayoutManager);
             mRecyclerView.setHasFixedSize(true);
             progressBar.setVisibility(View.INVISIBLE);

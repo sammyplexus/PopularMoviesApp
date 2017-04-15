@@ -6,7 +6,12 @@
     android:layout_marginRight="@dimen/small_padding"
     android:layout_marginBottom="@dimen/small_padding"
     >
-<ImageView
+
+    <!--<TextView-->
+        <!--android:id="@+id/tv_tv"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="150dp" />-->
+   <ImageView
     android:id="@+id/iv_posters"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"

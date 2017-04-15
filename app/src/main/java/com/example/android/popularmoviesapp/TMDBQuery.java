@@ -44,6 +44,7 @@ import java.util.ArrayList;
             if (network_response != null)
                 try {
                     mMoviePosters = MovieUtils.ConvertResulttoMoviePostersModel(network_response);
+                    Log.d("TAG", mMoviePosters.size() + " ");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
