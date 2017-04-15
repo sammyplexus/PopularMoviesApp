@@ -1,5 +1,7 @@
 package com.example.android.popularmoviesapp.Utils;
 
+import android.os.Parcel;
+
 import com.example.android.popularmoviesapp.Model.MoviePosters;
 
 import org.json.JSONArray;

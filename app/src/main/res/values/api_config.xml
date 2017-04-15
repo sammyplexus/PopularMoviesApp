@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    //Enter your API Key here
+    <string name="TMDB_API_KEY">5368d1766bbc57d0b9ab888357294974</string>
+</resources>

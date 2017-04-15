@@ -5,12 +5,16 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 
+import com.example.android.popularmoviesapp.R;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
+
+import static android.R.attr.path;
 
 /**
  * Created by Agbede Samuel D on 4/9/2017.
@@ -22,16 +26,15 @@ public class NetworkUtils {
 
     final static String PARAM_QUERY_1 = "api_key";
     final static String PARAM_QUERY_2 = "language";
-    final static String API_KEY = " ";
     final static String LANGUAGE = "en-US";
 
 
 
 
-    public static URL buildUrl(String path) {
+    public static URL buildUrl(Context context, String path) {
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                 .appendPath(path)
-                .appendQueryParameter(PARAM_QUERY_1, API_KEY)
+                .appendQueryParameter(PARAM_QUERY_1, context.getResources().getString(R.string.TMDB_API_KEY))
                 .appendQueryParameter(PARAM_QUERY_2, LANGUAGE)
                 .build();
 

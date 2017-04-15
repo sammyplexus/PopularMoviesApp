@@ -4,28 +4,31 @@ import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatRatingBar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-
 import com.example.android.popularmoviesapp.Model.MoviePosters;
 import com.squareup.picasso.Picasso;
 
 public class MovieDetails extends AppCompatActivity {
-    private ActionBar actionBar;
     private TextView mMovieTitle;
     private TextView mMovieReleaseYear;
     private TextView mMovieSummary;
     private ImageView mMoviePoster;
     private RatingBar mRatingBar;
+    private ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
+        actionBar = getSupportActionBar();
+
+
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         mMovieTitle = (TextView)findViewById(R.id.tv_movie_title);
         mMovieReleaseYear = (TextView)findViewById(R.id.tv_movie_release_year);
@@ -33,14 +36,14 @@ public class MovieDetails extends AppCompatActivity {
         mMoviePoster = (ImageView)findViewById(R.id.iv_movie_details_poster);
         mRatingBar = (RatingBar)findViewById(R.id.ratingBar);
 
-        actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
 
-        if (getIntent().hasExtra(MainActivity.SERIALIZABLE_CONTENT)){
+
+        if (getIntent().hasExtra(MainActivity.PARCELABLE_CONTENT)){
             Intent intent = getIntent();
-            MoviePosters moviePosters = (MoviePosters) intent.getSerializableExtra(MainActivity.SERIALIZABLE_CONTENT);
-            Picasso.with(this).load(moviePosters.getMovie_poster_path()).into(mMoviePoster);
+            MoviePosters moviePosters = intent.getParcelableExtra(MainActivity.PARCELABLE_CONTENT);
             actionBar.setTitle(moviePosters.getMovie_original_title());
+            Picasso.with(this).load(moviePosters.getMovie_poster_path()).into(mMoviePoster);
+
             mMovieTitle.setText(moviePosters.getMovie_original_title());
             mMovieReleaseYear.append(moviePosters.getMovie_release_date());
             mMovieSummary.setText(moviePosters.getMovie_overview());
@@ -48,8 +51,6 @@ public class MovieDetails extends AppCompatActivity {
             float rating = (float)((moviePosters.getMovie_vote_average() /10) * 5);
             Log.d("rate", rating+" ");
             mRatingBar.setRating(rating);
-
-
 
         }
     }

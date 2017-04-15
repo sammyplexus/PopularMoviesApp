@@ -1,12 +1,24 @@
 package com.example.android.popularmoviesapp.Model;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Created by Agbede Samuel D on 4/14/2017.
  */
 
-public class MoviePosters implements Serializable{
+public class MoviePosters implements Parcelable{
+    public MoviePosters(){}
+
+    private MoviePosters(Parcel in){
+        movie_poster_path = in.readString();
+        movie_overview = in.readString();
+        movie_release_date = in.readString();
+        movie_id = in.readInt();
+        movie_original_title = in.readString();
+        movie_backdrop_path = in.readString();
+        movie_vote_average = in.readDouble();
+    }
     String movie_poster_path;
     String movie_overview;
     String movie_release_date;
@@ -14,6 +26,18 @@ public class MoviePosters implements Serializable{
     String movie_original_title;
     String movie_backdrop_path;
     double movie_vote_average;
+
+    public static final Creator<MoviePosters> CREATOR = new Creator<MoviePosters>() {
+        @Override
+        public MoviePosters createFromParcel(Parcel in) {
+            return new MoviePosters(in);
+        }
+
+        @Override
+        public MoviePosters[] newArray(int size) {
+            return new MoviePosters[size];
+        }
+    };
 
     public String getMovie_poster_path() {
         return movie_poster_path;
@@ -72,4 +96,20 @@ public class MoviePosters implements Serializable{
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(movie_poster_path);
+        dest.writeString(movie_overview);
+        dest.writeString(movie_release_date);
+        dest.writeInt(movie_id);
+        dest.writeString(movie_original_title);
+        dest.writeString(movie_backdrop_path);
+        dest.writeDouble(movie_vote_average);
+    }
 }
+
