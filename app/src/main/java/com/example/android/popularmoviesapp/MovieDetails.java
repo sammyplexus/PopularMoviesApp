@@ -9,8 +9,12 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
+import com.example.android.popularmoviesapp.Adapter.RecyclerAdapter;
 import com.example.android.popularmoviesapp.Model.MoviePosters;
 import com.squareup.picasso.Picasso;
+
+import java.util.concurrent.RecursiveAction;
 
 public class MovieDetails extends AppCompatActivity {
     private TextView mMovieTitle;
@@ -24,6 +28,7 @@ public class MovieDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+
 
         actionBar = getSupportActionBar();
 
@@ -40,9 +45,11 @@ public class MovieDetails extends AppCompatActivity {
 
         if (getIntent().hasExtra(MainActivity.PARCELABLE_CONTENT)){
             Intent intent = getIntent();
+
             MoviePosters moviePosters = intent.getParcelableExtra(MainActivity.PARCELABLE_CONTENT);
+            String imageURL = RecyclerAdapter.base_path_image_url + moviePosters.getMovie_poster_path();
             actionBar.setTitle(moviePosters.getMovie_original_title());
-            Picasso.with(this).load(moviePosters.getMovie_poster_path()).into(mMoviePoster);
+            Picasso.with(this).load(imageURL).into(mMoviePoster);
 
             mMovieTitle.setText(moviePosters.getMovie_original_title());
             mMovieReleaseYear.append(moviePosters.getMovie_release_date());

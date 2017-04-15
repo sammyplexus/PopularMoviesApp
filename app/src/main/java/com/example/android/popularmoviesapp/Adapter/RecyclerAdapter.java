@@ -29,7 +29,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         void onRecyclerItemClick(int position);
     }
 
-    private final String base_path_image_url = "https://image.tmdb.org/t/p/w500/";
+    public static String base_path_image_url = "https://image.tmdb.org/t/p/w500/";
     private onClickListener mOnClickListener;
     private Context context;
     private ArrayList<MoviePosters> mMoviePosters;
@@ -48,8 +48,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         String ImageURLPath = base_path_image_url + mMoviePosters.get(position).getMovie_poster_path();
-        mMoviePosters.get(position).setMovie_poster_path(ImageURLPath);
-        Picasso.with(context).load(ImageURLPath).placeholder(R.mipmap.ic_launcher).into(holder.mPosterImage);
+        //mMoviePosters.get(position).setMovie_poster_path(ImageURLPath);
+        Picasso.with(context).load(ImageURLPath).into(holder.mPosterImage);
     }
 
     @Override
