@@ -41,14 +41,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(context).inflate(R.layout.individual_recycler_views, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.individual_recycler_views, parent, false);
         return new ViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         String ImageURLPath = base_path_image_url + mMoviePosters.get(position).getMovie_poster_path();
-        Log.d("TAG", ImageURLPath);
         mMoviePosters.get(position).setMovie_poster_path(ImageURLPath);
         Picasso.with(context).load(ImageURLPath).placeholder(R.mipmap.ic_launcher).into(holder.mPosterImage);
     }
