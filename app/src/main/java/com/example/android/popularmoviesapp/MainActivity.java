@@ -1,11 +1,15 @@
 package com.example.android.popularmoviesapp;
 
 import android.content.Intent;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,30 +17,41 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.example.android.popularmoviesapp.Model.MoviePosters;
 import com.example.android.popularmoviesapp.Adapter.RecyclerAdapter;
+import com.example.android.popularmoviesapp.Utils.MovieUtils;
 import com.example.android.popularmoviesapp.Utils.NetworkUtils;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements RecyclerAdapter.onClickListener, AsyncTaskCompleteListener<ArrayList<MoviePosters>>{
-    private RecyclerView mRecyclerView;
-    private ProgressBar progressBar;
-    private TextView mErrorTextView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class MainActivity extends AppCompatActivity implements RecyclerAdapter.onClickListener, LoaderManager.LoaderCallbacks<ArrayList<MoviePosters>>{
+    @BindView(R.id.rv_movie_posters) RecyclerView mRecyclerView;
+    @BindView(R.id.pb_recyclerview) ProgressBar progressBar;
+    @BindView(R.id.tv_recycler_view_error) TextView mErrorTextView;
+
+    private final int LOADER_ID = 342;
     private RecyclerAdapter mRecyclerAdapter;
     private ArrayList<MoviePosters> MainMoviePosters;
     private String whatIsShowing = "popular";
     private ActionBar actionBar;
+    private URL url = null;
+
     public static final String PARCELABLE_CONTENT = "parcelable";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        progressBar = (ProgressBar) findViewById(R.id.pb_recyclerview);
-        mErrorTextView = (TextView)findViewById(R.id.tv_recycler_view_error);
-        actionBar = getSupportActionBar();
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_movie_posters);
+        ButterKnife.bind(this);
 
+        Log.d("Oncreate", "Oncreate");
+
+        actionBar = getSupportActionBar();
 
         if (NetworkUtils.isInternetAvailable() && NetworkUtils.isNetworkAvailable(this)) {
 
@@ -49,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.o
             mErrorTextView.setVisibility(View.VISIBLE);
             actionBar.hide();
         }
+
     }
 
     @Override
@@ -114,15 +130,71 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.o
         if (mRecyclerAdapter != null)
             mRecyclerAdapter.notifyDataSetChanged();
 
-        URL url = NetworkUtils.buildUrl(this, path);
+        url = NetworkUtils.buildUrl(this, path);
+        Log.d("URL", url.toString());
         progressBar.setVisibility(View.VISIBLE);
-        new TMBDQuery(this, this).execute(url);
+        getSupportLoaderManager().initLoader(LOADER_ID, null, this);
     }
 
-        @Override
-        public void onTaskComplete(ArrayList<MoviePosters> result)
-        {
-            MainMoviePosters.addAll(result);
+
+
+    @Override
+    public Loader<ArrayList<MoviePosters>> onCreateLoader(int id, Bundle args) {
+
+        return new AsyncTaskLoader<ArrayList<MoviePosters>>(this) {
+            ArrayList<MoviePosters> MoviePostersCache = null;
+
+            @Override
+            protected void onStartLoading()
+            {
+                Log.d("Loader", "Starting");
+               if (MoviePostersCache != null){
+                   deliverResult(MoviePostersCache);
+               }
+               else {
+                   forceLoad();
+               }
+            }
+
+            @Override
+            public ArrayList<MoviePosters> loadInBackground()
+            {
+                ArrayList<MoviePosters> mMoviePosters = null;
+                String network_response = " ";
+
+                try {
+                    network_response = NetworkUtils.getResponseFromHttpUrl(url);
+                    Log.d("URL", url.toString());
+                    Log.d("TAG", network_response);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                if (network_response != null)
+                    try {
+                       mMoviePosters = MovieUtils.ConvertResulttoMoviePostersModel(network_response);
+                        Log.d("TAG", mMoviePosters.size() + " ");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                return mMoviePosters;
+            }
+
+            @Override
+            public void deliverResult(ArrayList<MoviePosters> data)
+            {
+                MoviePostersCache = data;
+                super.deliverResult(data);
+            }
+        };
+
+    }
+
+    @Override
+    public void onLoadFinished(Loader<ArrayList<MoviePosters>> loader, ArrayList<MoviePosters> data) {
+        if (data != null){
+            MainMoviePosters.addAll(data);
             mRecyclerAdapter = new RecyclerAdapter(MainActivity.this, MainActivity.this, MainMoviePosters);
             GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this, getResources().getInteger(R.integer.num_columns_recycler_view));
             mRecyclerView.setLayoutManager(gridLayoutManager);
@@ -130,7 +202,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.o
             progressBar.setVisibility(View.INVISIBLE);
             mRecyclerView.setAdapter(mRecyclerAdapter);
         }
+
     }
+
+    @Override
+    public void onLoaderReset(Loader<ArrayList<MoviePosters>> loader) {
+
+    }
+}
 
 
 

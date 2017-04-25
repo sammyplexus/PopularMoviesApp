@@ -57,8 +57,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         return mMoviePosters.size();
     }
 
-
-
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ImageView mPosterImage;
         public ViewHolder(View itemView) {

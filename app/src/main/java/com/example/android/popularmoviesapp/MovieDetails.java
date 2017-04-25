@@ -16,32 +16,25 @@ import com.squareup.picasso.Picasso;
 
 import java.util.concurrent.RecursiveAction;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MovieDetails extends AppCompatActivity {
-    private TextView mMovieTitle;
-    private TextView mMovieReleaseYear;
-    private TextView mMovieSummary;
-    private ImageView mMoviePoster;
-    private RatingBar mRatingBar;
+    @BindView(R.id.tv_movie_title) TextView mMovieTitle;
+    @BindView(R.id.tv_movie_release_year) TextView mMovieReleaseYear;
+    @BindView(R.id.tv_movie_plot_summary) TextView mMovieSummary;
+    @BindView(R.id.iv_movie_details_poster) ImageView mMoviePoster;
+    @BindView(R.id.ratingBar) RatingBar mRatingBar;
     private ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
-
+        ButterKnife.bind(this);
 
         actionBar = getSupportActionBar();
-
-
         actionBar.setDisplayHomeAsUpEnabled(true);
-
-        mMovieTitle = (TextView)findViewById(R.id.tv_movie_title);
-        mMovieReleaseYear = (TextView)findViewById(R.id.tv_movie_release_year);
-        mMovieSummary = (TextView)findViewById(R.id.tv_movie_plot_summary);
-        mMoviePoster = (ImageView)findViewById(R.id.iv_movie_details_poster);
-        mRatingBar = (RatingBar)findViewById(R.id.ratingBar);
-
-
 
         if (getIntent().hasExtra(MainActivity.PARCELABLE_CONTENT)){
             Intent intent = getIntent();
