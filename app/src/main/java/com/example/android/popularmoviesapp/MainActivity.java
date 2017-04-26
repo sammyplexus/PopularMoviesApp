@@ -123,17 +123,17 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.o
 
 
     public void getPosters(String path) {
+        mRecyclerAdapter.setData(null);
+        progressBar.setVisibility(View.VISIBLE);
+        url = NetworkUtils.buildUrl(this, path);
 
             Loader<ArrayList<MoviePosters>> loader = getSupportLoaderManager().getLoader(LOADER_ID);
-            if (loader != null){
-                getSupportLoaderManager().destroyLoader(LOADER_ID);
+            if (loader == null){
+                getSupportLoaderManager().initLoader(LOADER_ID, null, this);
             }
-
-            mRecyclerAdapter.setData(null);
-            progressBar.setVisibility(View.VISIBLE);
-            url = NetworkUtils.buildUrl(this, path);
-
-            getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+            else {
+                getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
+            }
 
     }
 
@@ -197,8 +197,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.o
             progressBar.setVisibility(View.INVISIBLE);
             mRecyclerView.setAdapter(mRecyclerAdapter);
         }
-
-        //loader.stopLoading();
 
     }
 
