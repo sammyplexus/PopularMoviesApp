@@ -48,10 +48,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.o
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
-        Log.d("Oncreate", "Oncreate");
-
         actionBar = getSupportActionBar();
+        mRecyclerAdapter = new RecyclerAdapter(this, this);
 
         if (NetworkUtils.isInternetAvailable() && NetworkUtils.isNetworkAvailable(this)) {
 
@@ -126,29 +124,29 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.o
 
     public void getPosters(String path) {
 
-        MainMoviePosters.clear();
-        if (mRecyclerAdapter != null)
-            mRecyclerAdapter.notifyDataSetChanged();
+            Loader<ArrayList<MoviePosters>> loader = getSupportLoaderManager().getLoader(LOADER_ID);
+            if (loader != null){
+                getSupportLoaderManager().destroyLoader(LOADER_ID);
+            }
 
-        url = NetworkUtils.buildUrl(this, path);
-        Log.d("URL", url.toString());
-        progressBar.setVisibility(View.VISIBLE);
-        getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+            mRecyclerAdapter.setData(null);
+            progressBar.setVisibility(View.VISIBLE);
+            url = NetworkUtils.buildUrl(this, path);
+
+            getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+
     }
-
 
 
     @Override
     public Loader<ArrayList<MoviePosters>> onCreateLoader(int id, Bundle args) {
-
         return new AsyncTaskLoader<ArrayList<MoviePosters>>(this) {
-            ArrayList<MoviePosters> MoviePostersCache = null;
-
+            ArrayList<MoviePosters> MoviePostersCache;
             @Override
             protected void onStartLoading()
             {
-                Log.d("Loader", "Starting");
                if (MoviePostersCache != null){
+                   Log.w("It is not null", "Not null");
                    deliverResult(MoviePostersCache);
                }
                else {
@@ -164,8 +162,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.o
 
                 try {
                     network_response = NetworkUtils.getResponseFromHttpUrl(url);
-                    Log.d("URL", url.toString());
-                    Log.d("TAG", network_response);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -194,14 +190,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.o
     @Override
     public void onLoadFinished(Loader<ArrayList<MoviePosters>> loader, ArrayList<MoviePosters> data) {
         if (data != null){
-            MainMoviePosters.addAll(data);
-            mRecyclerAdapter = new RecyclerAdapter(MainActivity.this, MainActivity.this, MainMoviePosters);
+            mRecyclerAdapter.setData(data);
             GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this, getResources().getInteger(R.integer.num_columns_recycler_view));
             mRecyclerView.setLayoutManager(gridLayoutManager);
             mRecyclerView.setHasFixedSize(true);
             progressBar.setVisibility(View.INVISIBLE);
             mRecyclerView.setAdapter(mRecyclerAdapter);
         }
+
+        //loader.stopLoading();
 
     }
 

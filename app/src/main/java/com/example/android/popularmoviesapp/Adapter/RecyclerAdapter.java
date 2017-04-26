@@ -33,10 +33,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     private onClickListener mOnClickListener;
     private Context context;
     private ArrayList<MoviePosters> mMoviePosters;
-    public RecyclerAdapter(Context context, onClickListener mOnClickListener, ArrayList<MoviePosters> mMoviePosters){
+    public RecyclerAdapter(Context context, onClickListener mOnClickListener){
         this.context = context;
         this.mOnClickListener = mOnClickListener;
-        this.mMoviePosters = mMoviePosters;
     }
 
     @Override
@@ -54,6 +53,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     @Override
     public int getItemCount() {
+        if (mMoviePosters == null)
+            return 0;
         return mMoviePosters.size();
     }
 
@@ -69,6 +70,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         public void onClick(View v) {
             mOnClickListener.onRecyclerItemClick(getAdapterPosition());
         }
+    }
+
+    public void setData(ArrayList<MoviePosters> mMoviePosters){
+        this.mMoviePosters = mMoviePosters;
+        notifyDataSetChanged();
     }
 
 
