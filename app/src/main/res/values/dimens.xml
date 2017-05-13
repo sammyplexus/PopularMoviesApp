@@ -3,4 +3,17 @@
     <integer name="num_columns_recycler_view">2</integer>
     <dimen name="small_padding">4dp</dimen>
     <dimen name="medium_padding">8dp</dimen>
+    <dimen name="large_margin_top">18dp</dimen>
+    <dimen name="empty_width_dimen">0dp</dimen>
+    <dimen name="appbar_dimen_height">230dp</dimen>
+    <dimen name="expanded_title_margin_end">64dp</dimen>
+    <dimen name="expandedTitleMarginStart">24dp</dimen>
+    <dimen name="margin_large">16dp</dimen>
+    <dimen name="relative_layout_width">48dp</dimen>
+    <dimen name="relative_layout_height">48dp</dimen>
+    <dimen name="view_width">12dp</dimen>
+    <dimen name="view_height">12dp</dimen>
+    <dimen name="textview_height">48dp</dimen>
+    <dimen name="textview_normal_size">12sp</dimen>
+    <dimen name="large_text_siz">16sp</dimen>
 </resources>

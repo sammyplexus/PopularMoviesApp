@@ -14,6 +14,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
+import static android.R.attr.id;
 import static android.R.attr.path;
 
 /**
@@ -24,14 +25,69 @@ public class NetworkUtils {
     final static String BASE_URL =
             "https://api.themoviedb.org/3/movie";
 
+
     final static String PARAM_QUERY_1 = "api_key";
     final static String PARAM_QUERY_2 = "language";
     final static String LANGUAGE = "en-US";
+    final static String VIDEOS = "videos";
+    final static String REVIEWS = "reviews";
 
 
 
+    public static URL buildVideoURL(Context context, int id){
+       Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+               .appendPath(String.valueOf(id))
+               .appendPath(VIDEOS)
+               .appendQueryParameter(PARAM_QUERY_1, context.getResources().getString(R.string.TMDB_API_KEY))
+               .appendQueryParameter(PARAM_QUERY_2, LANGUAGE)
+               .build();
+
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+    public static URL buildReviewURL(Context context, int review_id){
+        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+                .appendPath(String.valueOf(review_id))
+                .appendPath(REVIEWS)
+                .appendQueryParameter(PARAM_QUERY_1, context.getResources().getString(R.string.TMDB_API_KEY))
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
 
     public static URL buildUrl(Context context, String path) {
+        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+                .appendPath(path)
+                .appendQueryParameter(PARAM_QUERY_1, context.getResources().getString(R.string.TMDB_API_KEY))
+                .appendQueryParameter(PARAM_QUERY_2, LANGUAGE)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+    public static URL buildReviewUrl(Context context, String path) {
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                 .appendPath(path)
                 .appendQueryParameter(PARAM_QUERY_1, context.getResources().getString(R.string.TMDB_API_KEY))
@@ -63,7 +119,8 @@ public class NetworkUtils {
             } else {
                 return null;
             }
-        } finally {
+        } finally
+        {
             urlConnection.disconnect();
         }
     }

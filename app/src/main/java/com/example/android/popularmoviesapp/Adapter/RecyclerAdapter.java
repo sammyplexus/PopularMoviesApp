@@ -1,16 +1,13 @@
 package com.example.android.popularmoviesapp.Adapter;
 
 import android.content.Context;
-import android.graphics.Rect;
-import android.provider.ContactsContract;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.popularmoviesapp.R;
 import com.example.android.popularmoviesapp.Model.MoviePosters;
@@ -18,7 +15,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 /**
  * Created by Agbede Samuel D on 4/10/2017.
@@ -45,22 +41,25 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        String ImageURLPath = base_path_image_url + mMoviePosters.get(position).getMovie_poster_path();
-        //mMoviePosters.get(position).setMovie_poster_path(ImageURLPath);
-        Picasso.with(context).load(ImageURLPath).into(holder.mPosterImage);
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+
+            String ImageURLPath = base_path_image_url + mMoviePosters.get(position).getMovie_poster_path();
+            mMoviePosters.get(position).setMovie_poster_path(ImageURLPath);
+            Picasso.with(context).load(ImageURLPath).placeholder(R.mipmap.ic_launcher).into(holder.mPosterImage);
+
     }
 
     @Override
     public int getItemCount() {
-        if (mMoviePosters == null)
-            return 0;
-        return mMoviePosters.size();
+            if (mMoviePosters == null)
+                return 0;
+            return mMoviePosters.size();
+
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public ImageView mPosterImage;
-        public ViewHolder(View itemView) {
+        private ImageView mPosterImage;
+        private ViewHolder(View itemView) {
             super(itemView);
             mPosterImage = (ImageView)itemView.findViewById(R.id.iv_posters);
             mPosterImage.setOnClickListener(this);
@@ -75,6 +74,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public void setData(ArrayList<MoviePosters> mMoviePosters){
         this.mMoviePosters = mMoviePosters;
         notifyDataSetChanged();
+    }
+
+
+    public ArrayList<MoviePosters> getData(){
+        return this.mMoviePosters;
     }
 
 

@@ -1,8 +1,11 @@
 package com.example.android.popularmoviesapp.Utils;
 
 import android.os.Parcel;
+import android.util.Log;
 
 import com.example.android.popularmoviesapp.Model.MoviePosters;
+import com.example.android.popularmoviesapp.Model.MovieReviews;
+import com.example.android.popularmoviesapp.Model.MovieTrailers;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,11 +35,7 @@ public class MovieUtils {
         final String MOVIE_RELEASE_DATE = "release_date";
 
         JSONObject mainJsonObject = new JSONObject(URLResults);
-
         JSONArray results = mainJsonObject.getJSONArray(MAIN_JSON_ARRAY);
-
-
-
 
         for (int i = 0; i < results.length(); i++){
             JSONObject jsonObject = results.getJSONObject(i);
@@ -59,9 +58,75 @@ public class MovieUtils {
             posters.setMovie_release_date(movie_release_date);
 
             mMoviePosters.add(posters);
-
         }
 
         return mMoviePosters;
+    }
+
+    public static MovieReviews ConvertResulttoMovieReviewsModel(String URLResults) throws JSONException
+    {
+        MovieReviews mMovieReviews = new MovieReviews();
+
+        final String MAIN_JSON_ARRAY = "results";
+        final String MOVIE_ID = "id";
+        final String REVIEW_ID = "id";
+        final String MOVIE_REVIEW_AUTHOR = "author";
+        final String MOVIE_REVIEW_CONTENT = "content";
+        final String MOVIE_REVIEW_URL = "url";
+
+        JSONObject mainJsonObject = new JSONObject(URLResults);
+        JSONArray results = mainJsonObject.getJSONArray(MAIN_JSON_ARRAY);
+
+        for (int i = 0; i < results.length(); i++){
+            JSONObject jsonObject = results.getJSONObject(i);
+
+            String review_id = jsonObject.getString(REVIEW_ID);
+            String review_content = jsonObject.getString(MOVIE_REVIEW_CONTENT);
+            String review_author = jsonObject.getString(MOVIE_REVIEW_AUTHOR);
+            String review_url = jsonObject.getString(MOVIE_REVIEW_URL);
+
+            mMovieReviews.setReview_id(review_id);
+            mMovieReviews.setReview_author(review_author);
+            mMovieReviews.setReview_content(review_content);
+            mMovieReviews.setReview_url(review_url);
+
+        }
+
+        return mMovieReviews;
+    }
+
+    public static ArrayList<MovieTrailers> ConvertResulttoMovieTrailersModel(String URLResults) throws JSONException
+    {
+        ArrayList<MovieTrailers> mMovieTrailers = new ArrayList<>();
+
+        final String MAIN_JSON_ARRAY = "results";
+        final String TRAILER_ID = "id";
+        final String MOVIE_TRAILER_KEY = "key";
+        final String MOVIE_TRAILER_NAME = "name";
+
+        JSONObject mainJsonObject = new JSONObject(URLResults);
+        JSONArray results = mainJsonObject.getJSONArray(MAIN_JSON_ARRAY);
+        Log.d("ZA2", results.length()+"");
+
+        if (results.length() > 0)
+        {
+            for (int i = 0; i < results.length(); i++)
+            {
+                MovieTrailers movieTrailers = new MovieTrailers();
+                JSONObject jsonObject = results.getJSONObject(i);
+
+                String trailer_id = jsonObject.getString(TRAILER_ID);
+                String trailer_key = jsonObject.getString(MOVIE_TRAILER_KEY);
+                String trailer_name = jsonObject.getString(MOVIE_TRAILER_NAME);
+
+                movieTrailers.setId(trailer_id);
+                movieTrailers.setKey(trailer_key);
+                movieTrailers.setName(trailer_name);
+
+                mMovieTrailers.add(movieTrailers);
+            }
+        }
+
+        return mMovieTrailers;
     }
 }

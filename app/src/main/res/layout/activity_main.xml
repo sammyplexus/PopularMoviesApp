@@ -1,35 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.android.popularmoviesapp.MainActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_movie_posters"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/small_padding"
-        android:paddingTop="@dimen/small_padding"
-        android:scrollbars="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        />
-
     <TextView
         android:id="@+id/tv_recycler_view_error"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         style="@style/TextAppearance.AppCompat.Caption"
         android:text="@string/no_internet"
-        android:layout_gravity="center_horizontal|center_vertical"
-        android:gravity="center_horizontal"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:gravity="center"
+        android:layout_marginRight="@dimen/medium_padding"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="@dimen/medium_padding"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/medium_padding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/medium_padding"
         android:visibility="invisible"/>
+
     <ProgressBar
         android:id="@+id/pb_recyclerview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_marginRight="@dimen/medium_padding"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="@dimen/medium_padding"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/medium_padding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/medium_padding"
         android:visibility="invisible"/>
 
-</android.support.design.widget.CoordinatorLayout>
+    <Button
+        android:id="@+id/btn_retry"
+        style="@style/Base.TextAppearance.AppCompat.Widget.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:background="@color/colorAccent"
+        android:text="Retry"
+        app:layout_anchor="@+id/rv_movie_posters"
+        app:layout_anchorGravity="top|left"
+        android:layout_marginTop="@dimen/large_margin_top"
+        app:layout_constraintTop_toBottomOf="@+id/tv_recycler_view_error"
+        android:layout_marginRight="@dimen/medium_padding"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="@dimen/medium_padding"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:visibility="invisible"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_movie_posters"
+        android:layout_width="@dimen/empty_width_dimen"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/small_padding"
+        android:paddingTop="@dimen/small_padding"
+        android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

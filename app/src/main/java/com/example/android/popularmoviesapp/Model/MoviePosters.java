@@ -18,6 +18,7 @@ public class MoviePosters implements Parcelable{
         movie_original_title = in.readString();
         movie_backdrop_path = in.readString();
         movie_vote_average = in.readDouble();
+
     }
     String movie_poster_path;
     String movie_overview;
@@ -25,6 +26,7 @@ public class MoviePosters implements Parcelable{
     int movie_id;
     String movie_original_title;
     String movie_backdrop_path;
+
     double movie_vote_average;
 
     public static final Creator<MoviePosters> CREATOR = new Creator<MoviePosters>() {
@@ -110,6 +112,7 @@ public class MoviePosters implements Parcelable{
         dest.writeString(movie_original_title);
         dest.writeString(movie_backdrop_path);
         dest.writeDouble(movie_vote_average);
+
     }
 }
 
