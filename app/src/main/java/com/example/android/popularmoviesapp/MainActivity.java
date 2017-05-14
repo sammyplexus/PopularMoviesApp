@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.o
     LoaderManager.LoaderCallbacks<ArrayList<MoviePosters>> MoviePosterCallback;
     private static final String SORT_TYPE_EXTRA = "sort_type";
 
-    GridLayoutManager gridLayoutManager;
+    private GridLayoutManager gridLayoutManager;
     private final int LOADER_ID = 342;
     private final int LOADER_FAVORITE_ID = 343;
     private RecyclerAdapter mRecyclerAdapter;
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.o
     private static String whatIsShowing = "popular";
     private ActionBar actionBar;
     private URL url = null;
-    FavoriteAdapter favoriteAdapter;
+    private FavoriteAdapter favoriteAdapter;
     public static final String PARCELABLE_CONTENT = "parcelable";
     private Cursor favorites_cursor;
     private String mSortOrder;

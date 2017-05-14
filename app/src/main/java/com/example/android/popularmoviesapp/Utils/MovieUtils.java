@@ -13,14 +13,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static android.media.CamcorderProfile.get;
-
-
 /**
  * Created by Agbede Samuel D on 4/14/2017.
  */
 
-public class MovieUtils {
+public final class MovieUtils {
+    private MovieUtils(){}
 
     public static ArrayList<MoviePosters> ConvertResulttoMoviePostersModel(String URLResults) throws JSONException {
         ArrayList<MoviePosters> mMoviePosters = new ArrayList<>();
