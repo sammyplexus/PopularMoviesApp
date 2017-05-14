@@ -2,6 +2,7 @@ package com.example.android.popularmoviesapp;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.CursorLoader;
@@ -36,23 +37,32 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements RecyclerAdapter.onClickListener, FavoriteAdapter.onFavItemClickListener{
+    private static final String BUNDLE_RECYCLER_LAYOUT = "recycler_bundle";
+    private static final String SORT_ORDER_KEY = "sort_order_key";
+    private static final String FAVORITES = "favorites";
+    private static final String POPULAR = "popular";
+    private static final String TOP_RATED = "top_rated";
     @BindView(R.id.rv_movie_posters) RecyclerView mRecyclerView;
     @BindView(R.id.pb_recyclerview) ProgressBar progressBar;
     @BindView(R.id.btn_retry) Button mRetryButton;
     @BindView(R.id.tv_recycler_view_error) TextView mErrorTextView;
     LoaderManager.LoaderCallbacks<Cursor> CursorLoaderCallback;
     LoaderManager.LoaderCallbacks<ArrayList<MoviePosters>> MoviePosterCallback;
+    private static final String SORT_TYPE_EXTRA = "sort_type";
 
+    GridLayoutManager gridLayoutManager;
     private final int LOADER_ID = 342;
     private final int LOADER_FAVORITE_ID = 343;
     private RecyclerAdapter mRecyclerAdapter;
     private ArrayList<MoviePosters> MainMoviePosters;
+
     private static String whatIsShowing = "popular";
     private ActionBar actionBar;
     private URL url = null;
     FavoriteAdapter favoriteAdapter;
     public static final String PARCELABLE_CONTENT = "parcelable";
     private Cursor favorites_cursor;
+    private String mSortOrder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.o
                 if (data != null){
                     favorites_cursor = data;
                     favoriteAdapter = new FavoriteAdapter(MainActivity.this, data, MainActivity.this);
-                    GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this, getResources().getInteger(R.integer.num_columns_recycler_view));
+                    gridLayoutManager = new GridLayoutManager(MainActivity.this, getResources().getInteger(R.integer.num_columns_recycler_view));
                     mRecyclerView.setLayoutManager(gridLayoutManager);
                     mRecyclerView.setHasFixedSize(true);
                     progressBar.setVisibility(View.INVISIBLE);
@@ -200,10 +210,27 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.o
             }
         });
 
+        if (savedInstanceState != null){
+            if (savedInstanceState != null) {
+
+                String sortType = savedInstanceState.getString(SORT_ORDER_KEY);
+                if (sortType.equals(FAVORITES)) {
+                    getFavoriteMovies();
+                } else {
+                    getPosters(sortType);
+                }
+            } else {
+                getPosters(POPULAR);
+            }
+        }
+
 
     }
 
     public void getPosters(String path) {
+        mSortOrder = path;
+        Bundle bundle = new Bundle();
+        bundle.putString(SORT_TYPE_EXTRA, path);
         mRecyclerAdapter.setData(null);
         favoriteAdapter.setCursor(null);
 
@@ -237,6 +264,25 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.o
         if (menu.size() == 0)
         getMenuInflater().inflate(R.menu.menu_main_activity, menu);
         return true;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(BUNDLE_RECYCLER_LAYOUT)) {
+                Parcelable savedRecylerLayoutState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
+                gridLayoutManager.onRestoreInstanceState(savedRecylerLayoutState);
+            }
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (gridLayoutManager != null)
+        outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, gridLayoutManager.onSaveInstanceState());
+        outState.putString(SORT_ORDER_KEY, mSortOrder);
     }
 
     @Override
@@ -282,6 +328,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.o
     }
 
     private void getFavoriteMovies() {
+        mSortOrder = FAVORITES;
         progressBar.setVisibility(View.VISIBLE);
         Loader<CursorLoader> loader = getSupportLoaderManager().getLoader(LOADER_FAVORITE_ID);
         if (loader == null){

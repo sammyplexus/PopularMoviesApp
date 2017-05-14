@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Movie;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -77,6 +78,17 @@ public class MovieDetails extends AppCompatActivity {
     private int LOADER_REVIEW_ID = 231;
     private int LOADER_TRAILER_ID = 233;
     private String trailer_key;
+
+    private final String MOVIE_TAG = "movie_tag";
+
+
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(MOVIE_TAG, moviePosters);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -251,74 +263,81 @@ public class MovieDetails extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         final int movie_id;
 
-        if (getIntent().hasExtra(MainActivity.PARCELABLE_CONTENT))
-        {
-            Intent intent = getIntent();
-
-            moviePosters = intent.getParcelableExtra(MainActivity.PARCELABLE_CONTENT);
-            movie_id = moviePosters.getMovie_id();
-            favorite_tag = favorite_tag + movie_id;
-            isMovieFavorited = sharedPrefs.getBoolean(favorite_tag, false);
-
-            String imageURL = moviePosters.getMovie_poster_path();
-            String backdrop = RecyclerAdapter.base_path_image_url + moviePosters.getMovie_backdrop_path();
-            actionBar.setTitle(moviePosters.getMovie_original_title());
-            Picasso.with(this).load(backdrop).priority(Picasso.Priority.HIGH).placeholder(R.mipmap.ic_launcher_round).into(collapsingImage);
-            Picasso.with(this).load(imageURL).placeholder(R.mipmap.ic_launcher_round).into(mMoviePoster);
-
-
-            collapsingToolbarLayout.setTitle(moviePosters.getMovie_original_title());
-
-            mMovieReleaseYear.append(moviePosters.getMovie_release_date());
-            mMovieSummary.setText(moviePosters.getMovie_overview());
-
-            float rating = (float)((moviePosters.getMovie_vote_average() /10) * 5);
-            mRatingBar.setRating(rating);
-
-            if (isMovieFavorited){
-                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_black_24dp));
-            }
-            if (!isMovieFavorited){
-                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
-            }
-
-            fab.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v) {
-                    //Favorite or unfavorite;
-                    if (isMovieFavorited)
-                    {
-                        //Unfavorite movie
-                        int rows = getContentResolver().delete(PMAContract.PMAEntry.CONTENT_URI, PMAContract.PMAEntry.COLUMN_MOVIE_ID + "=?", new String[]{String.valueOf(movie_id)});
-                        fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
-                        editor.putBoolean(favorite_tag, false);
-                        editor.apply();
-                        isMovieFavorited = false;
-                        Snackbar.make(v, "Movie unfavorited", Snackbar.LENGTH_SHORT).show();
-                    }
-                    else
-                    {
-                        //favorite movie
-                        ContentValues contentValues = new ContentValues();
-                        contentValues.put(PMAContract.PMAEntry.COLUMN_MOVIE_ID, moviePosters.getMovie_id());
-                        contentValues.put(PMAContract.PMAEntry.COLUMN_MOVIE_SYNOPSIS, moviePosters.getMovie_overview());
-                        contentValues.put(PMAContract.PMAEntry.COLUMN_MOVIE_RELEASE_DATE, moviePosters.getMovie_release_date());
-                        contentValues.put(PMAContract.PMAEntry.COLUMN_MOVIE_RATING, moviePosters.getMovie_vote_average());
-                        contentValues.put(PMAContract.PMAEntry.COLUMN_MOVIE_POSTER, moviePosters.getMovie_poster_path());
-                        contentValues.put(PMAContract.PMAEntry.COLUMN_MOVIE_TITLE, moviePosters.getMovie_original_title());
-
-                        getContentResolver().insert(PMAContract.PMAEntry.CONTENT_URI, contentValues);
-                        fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_black_24dp));
-                        editor.putBoolean(favorite_tag, true);
-                        editor.apply();
-                        isMovieFavorited = true;
-                        Snackbar.make(v, "Movie favorited", Snackbar.LENGTH_SHORT).show();
-                    }
-
-                }
-            });
+        if (savedInstanceState != null && savedInstanceState.containsKey(MOVIE_TAG)) {
+            moviePosters = savedInstanceState.getParcelable(MOVIE_TAG);
         }
+        else
+            {
+            Intent intent = getIntent();
+            moviePosters = null;
+            if (intent != null && intent.hasExtra(MainActivity.PARCELABLE_CONTENT))
+            {
+                moviePosters = intent.getParcelableExtra(MainActivity.PARCELABLE_CONTENT);
+
+            }
+        }
+
+        movie_id = moviePosters.getMovie_id();
+        favorite_tag = favorite_tag + movie_id;
+        isMovieFavorited = sharedPrefs.getBoolean(favorite_tag, false);
+
+        String imageURL = moviePosters.getMovie_poster_path();
+        String backdrop = RecyclerAdapter.base_path_image_url + moviePosters.getMovie_backdrop_path();
+        actionBar.setTitle(moviePosters.getMovie_original_title());
+        Picasso.with(this).load(backdrop).priority(Picasso.Priority.HIGH).placeholder(R.mipmap.ic_launcher_round).into(collapsingImage);
+        Picasso.with(this).load(imageURL).placeholder(R.mipmap.ic_launcher_round).into(mMoviePoster);
+
+
+        collapsingToolbarLayout.setTitle(moviePosters.getMovie_original_title());
+
+        mMovieReleaseYear.append(moviePosters.getMovie_release_date());
+        mMovieSummary.setText(moviePosters.getMovie_overview());
+        float rating = (float)((moviePosters.getMovie_vote_average() /10) * 5);
+        mRatingBar.setRating(rating);
+
+        if (isMovieFavorited){
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_black_24dp));
+        }
+        if (!isMovieFavorited){
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
+        }
+
+        fab.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                //Favorite or unfavorite;
+                if (isMovieFavorited)
+                {
+                    //Unfavorite movie
+                    int rows = getContentResolver().delete(PMAContract.PMAEntry.CONTENT_URI, PMAContract.PMAEntry.COLUMN_MOVIE_ID + "=?", new String[]{String.valueOf(movie_id)});
+                    fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
+                    editor.putBoolean(favorite_tag, false);
+                    editor.apply();
+                    isMovieFavorited = false;
+                    Snackbar.make(v, "Movie unfavorited", Snackbar.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    //favorite movie
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(PMAContract.PMAEntry.COLUMN_MOVIE_ID, moviePosters.getMovie_id());
+                    contentValues.put(PMAContract.PMAEntry.COLUMN_MOVIE_SYNOPSIS, moviePosters.getMovie_overview());
+                    contentValues.put(PMAContract.PMAEntry.COLUMN_MOVIE_RELEASE_DATE, moviePosters.getMovie_release_date());
+                    contentValues.put(PMAContract.PMAEntry.COLUMN_MOVIE_RATING, moviePosters.getMovie_vote_average());
+                    contentValues.put(PMAContract.PMAEntry.COLUMN_MOVIE_POSTER, moviePosters.getMovie_poster_path());
+                    contentValues.put(PMAContract.PMAEntry.COLUMN_MOVIE_TITLE, moviePosters.getMovie_original_title());
+
+                    getContentResolver().insert(PMAContract.PMAEntry.CONTENT_URI, contentValues);
+                    fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_black_24dp));
+                    editor.putBoolean(favorite_tag, true);
+                    editor.apply();
+                    isMovieFavorited = true;
+                    Snackbar.make(v, "Movie favorited", Snackbar.LENGTH_SHORT).show();
+                }
+
+            }
+        });
 
         mMovieReviewButton.setOnClickListener(new View.OnClickListener()
         {
